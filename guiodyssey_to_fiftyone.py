@@ -233,8 +233,20 @@ def create_fiftyone_dataset(
     
     # Add the samples to the dataset
     dataset.add_samples(split_results[split_name])
-    
+    dataset.compute_metadata()
+    dataset.add_dynamic_sample_fields()
+
+    # Create and save the sequences view
+    view = dataset.group_by(
+        "episode_id",
+        order_by="step"
+    )
+    dataset.save_view("sequences", view)
+
+    # Save the dataset
+    dataset.save()
     return dataset
+
 
 
 # Path to the GUI-Odyssey dataset
